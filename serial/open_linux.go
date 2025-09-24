@@ -135,6 +135,24 @@ func makeTermios2(options OpenOptions) (*termios2, error) {
 		t2.c_cflag |= unix.CRTSCTS
 	}
 
+
+    // Flow control (XON/XOFF)
+    if options.XONXOFFFlowControl {
+        // Disable RTS/CTS if both were requested
+        t2.c_cflag &^= unix.CRTSCTS
+
+        // Enable IXON/IXOFF in input flags
+        t2.c_iflag |= unix.IXON | unix.IXOFF
+
+        // Set XON/XOFF characters (optional: usually defaults are fine)
+        t2.c_cc[unix.VSTART] = 0x11 // XON
+        t2.c_cc[unix.VSTOP]  = 0x13 // XOFF
+    } else {
+        // Ensure software flow control is disabled
+        t2.c_iflag &^= (unix.IXON | unix.IXOFF)
+    }
+
+
 	return t2, nil
 }
 

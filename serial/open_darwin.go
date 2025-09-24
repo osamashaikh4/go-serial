@@ -193,6 +193,21 @@ func convertOptions(options OpenOptions) (*termios, error) {
 		result.c_cflag |= kCRTSCTS
 	}
 
+	// Flow control (XON/XOFF)
+    if options.XONXOFFFlowControl {
+        // Disable RTS/CTS if both requested
+        result.c_cflag &^= kCRTSCTS
+
+        // Enable IXON/IXOFF in input mode flags
+        result.c_iflag |= syscall.IXON | syscall.IXOFF
+
+        // Set XON/XOFF characters explicitly (defaults are usually fine)
+        result.c_cc[syscall.VSTART] = 0x11 // XON (^Q)
+        result.c_cc[syscall.VSTOP]  = 0x13 // XOFF (^S)
+    } else {
+        result.c_iflag &^= (syscall.IXON | syscall.IXOFF)
+    }
+
 	return &result, nil
 }
 
