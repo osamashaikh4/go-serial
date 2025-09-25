@@ -18,6 +18,7 @@
 package serial
 
 import (
+	"fmt"
 	"io"
 	"math"
 )
@@ -164,6 +165,7 @@ type OpenOptions struct {
 
 // Open creates an io.ReadWriteCloser based on the supplied options struct.
 func Open(options OpenOptions) (io.ReadWriteCloser, error) {
+	fmt.Println("serial.Open called")
 	// Redirect to the OS-specific function.
 	return openInternal(options)
 }
