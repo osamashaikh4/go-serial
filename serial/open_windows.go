@@ -197,21 +197,22 @@ func setCommState(h syscall.Handle, options OpenOptions) error {
 	// -----------------------------
 	// Flow control
 	// -----------------------------
-	if options.XONXOFFFlowControl {
-		// disable RTS/CTS if enabled
-		params.flags[0] &^= 0x04 // clear fOutxCtsFlow
-		params.flags[1] &^= 0x30 // clear RTS control bits
+	// if options.XONXOFFFlowControl {
+	// 	// disable RTS/CTS if enabled
+	// 	params.flags[0] &^= 0x04 // clear fOutxCtsFlow
+	// 	params.flags[1] &^= 0x30 // clear RTS control bits
 
-		// enable software flow control (fInX, fOutX)
-		params.flags[0] |= 0x20 // fOutX
-		params.flags[0] |= 0x08 // fInX
+	// 	// enable software flow control (fInX, fOutX)
+	// 	params.flags[0] |= 0x20 // fOutX
+	// 	params.flags[0] |= 0x08 // fInX
 
-		// assign standard XON/XOFF characters
-		params.XonChar = 0x11
-		params.XoffChar = 0x13
-		params.XonLim = 128
-		params.XoffLim = 128
-	} else if options.RTSCTSFlowControl {
+	// 	// assign standard XON/XOFF characters
+	// 	params.XonChar = 0x11
+	// 	params.XoffChar = 0x13
+	// 	params.XonLim = 128
+	// 	params.XoffLim = 128
+	// } else
+	if options.RTSCTSFlowControl {
 		params.flags[0] |= 0x04 // fOutxCtsFlow = 0x1
 		params.flags[1] |= 0x20 // fRtsControl = RTS_CONTROL_HANDSHAKE (0x2)
 	}
